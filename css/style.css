@@ -1,0 +1,14 @@
+dl {
+    display: flex;
+    flex-wrap: wrap;
+}
+dt {
+    box-sizing: border-box;
+    flex: 0 0 50%;
+    margin: 0;
+}
+dd {
+    box-sizing: border-box;
+    flex: 0 0 50%;
+    margin: 0;
+}
