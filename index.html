@@ -5,7 +5,9 @@
         <title>Stock Quote</title>
         <link rel="stylesheet" href="css/style.css">
         <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+        <script src="js/sandbox.js" charset="utf-8"></script>
+        <script src="js/app.js" charset="utf-8"></script>
     </head>
     <body>
         <div id="container">
@@ -16,34 +18,13 @@
             <!-- ===== SEARCH BOX ===== -->
             <div class="search-bar">
                 <form class="" action="index.html" method="post">
-                    <input type="search" name="symbol" placeholder="">
+                    <input type="search" id="symbol" name="symbol" placeholder="SYMBOL">
                     <input type="submit" name="submit" value="Quote">
                 </form>
             </div>
             <!-- ===== MAIN CONTENT ===== -->
             <main>
-                <!-- ===== GRAPH ===== -->
-                <section class="main-tab">
-                    <h1>Stock Name</h1>
-                    <div class="graph-left-btn"></div>
-                    <canvas id="graph"></canvas>
-                    <div class="graph-right-btn"></div>
-                </section>
-                <!-- ===== STOCK INFO ===== -->
-                <section>
-                    <dl>
-                        <dt></dt>
-                        <dd></dd>
-                    </dl>
-
-                </section>
-                <!-- ===== MORE STOCK INFO ===== -->
-                <section>
-                    <dl>
-                        <dt></dt>
-                        <dd></dd>
-                    </dl>
-                </section>
+                
             </main>
         </div>
     </body>
