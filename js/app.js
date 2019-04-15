@@ -1,14 +1,6 @@
 const runStockQuote = () => {
 
     const promise = $.ajax(
-        // {
-        //     url: 'https://www.alphavantage.co/query',
-        //     data: {
-        //         function: 'GLOBAL_QUOTE',
-        //         symbol: 'MSFT',
-        //         apikey: 'demo'
-        //     }
-        // }
         {
             url: `https://api.iextrading.com/1.0/stock/${$('#symbol').val()}/batch?types=quote,logo,company,chart&range=1d&chartInterval=10`
         }
@@ -16,6 +8,8 @@ const runStockQuote = () => {
         (data) => {
             // Store main container
             const $main = $('main').empty();
+
+            console.log(data);
 
             // Determine if value is positive or negative
             const overallPositive = Math.sign(data.quote.change) > -1 ? true : false;
@@ -101,6 +95,6 @@ const runStockQuote = () => {
 };
 
 $(() => {
-
+    console.log(Math.round((new Date()).getTime() / 1000));
     $('form').on('submit', runStockQuote);
 });
