@@ -53,5 +53,6 @@ dt {
 dd {
     box-sizing: border-box;
     flex: 0 0 50%;
+    font-weight: bold;
     margin: 0;
 }
