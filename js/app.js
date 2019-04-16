@@ -42,25 +42,6 @@ const runStockQuote = () => {
             const $graphContain = $('<div>').addClass('graph-container').appendTo($mainSection);
             $prevGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_back').appendTo($graphContain);
 
-            const graphs = [
-                { name: 'Daily', class: 'daily-graph' },
-                { name: 'Week', class: 'week-graph' },
-                { name: 'Month', class: 'mon-graph'}
-            ];
-
-            $graphContain.append('<div class="graph"><canvas id="daily-graph"></canvas><canvas id="week-graph" style="display: none;"></canvas></div>');
-            $nextGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_forward').appendTo($graphContain);
-
-            // Graph carousel click handlers
-            let currentGraph = 0;
-            $prevGraph.on('click', () => {
-                console.log('prev');
-            });
-
-            $nextGraph.on('click', () => {
-                console.log('next');
-            });
-
             // Chart Plots Arrays
             let chartLabels = [];
             let chartPlots = [];
@@ -84,41 +65,101 @@ const runStockQuote = () => {
 
             // Chart Color
             const chartColor = stocks[$symbol].getPositive() === true ? '84, 138, 2' : '186, 56, 60';
+            const dailyGraph = () => {
 
-            const dailyGraph = new Chart($('#daily-graph'), {
-                type: 'line',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Daily',
-                        data: chartPlots,
-                        backgroundColor: [
-                            `rgba(${chartColor}, 0.5)`
-                        ],
-                        borderColor: [
-                            `rgb(${chartColor})`
-                        ],
-                        borderWidth: 1
-                    }]
-                },
+                new Chart($('#daily-graph'), {
+                    type: 'line',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Daily',
+                            data: chartPlots,
+                            backgroundColor: [
+                                `rgba(${chartColor}, 0.5)`
+                            ],
+                            borderColor: [
+                                `rgb(${chartColor})`
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                });
+            };
+            const weekGraph = () => {
+
+                new Chart($('#week-graph'), {
+                    type: 'line',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Week',
+                            data: chartPlots,
+                            backgroundColor: [
+                                `rgba(${chartColor}, 0.5)`
+                            ],
+                            borderColor: [
+                                `rgb(${chartColor})`
+                            ],
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            };
+
+            const monthGraph = () => {
+
+                new Chart($('#month-graph'), {
+                    type: 'line',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Month',
+                            data: chartPlots,
+                            backgroundColor: [
+                                `rgba(${chartColor}, 0.5)`
+                            ],
+                            borderColor: [
+                                `rgb(${chartColor})`
+                            ],
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            };
+
+            const graphs = [dailyGraph, weekGraph, monthGraph];
+
+            $graphContain.append('<div class="graphs"><div class="daily-graph-container"><canvas id="daily-graph"></canvas></div><div class="week-graph-container"><canvas id="week-graph"></canvas></div><div class="month-graph-container"><canvas id="month-graph"></canvas></div></div>');dailyGraph();
+            $nextGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_forward').appendTo($graphContain);
+            $('.week-graph-container').hide();
+$('.month-graph-container').hide();
+
+            // Graph carousel click handlers
+            let currentGraph = 0;
+            const lastGraph = $graphContain.children().length - 1;
+            $prevGraph.on('click', () => {
+                console.log('prev');
+
+                const $graphContain = $('.graphs');
+                $graphContain.children().eq(currentGraph).hide();
+
+                // Decrease current graph
+                currentGraph = (currentGraph > 0) ? currentGraph - 1 : lastGraph;
+                $graphContain.children().eq(currentGraph).show();
+                graphs[currentGraph]();
             });
-            const weekGraph = new Chart($('#week-graph'), {
-                type: 'line',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Week',
-                        data: chartPlots,
-                        backgroundColor: [
-                            `rgba(${chartColor}, 0.5)`
-                        ],
-                        borderColor: [
-                            `rgb(${chartColor})`
-                        ],
-                        borderWidth: 1
-                    }]
-                },
+            $nextGraph.on('click', () => {
+                console.log('next');
+                const $graphContain = $('.graphs');
+                $graphContain.children().eq(currentGraph).hide();
+
+                // Increase current graph
+                currentGraph = (currentGraph < lastGraph) ? currentGraph + 1 : 0;
+
+                $graphContain.children().eq(currentGraph).show();
+                graphs[currentGraph]();
             });
+
             // Stock Stats Section
             $subSection1 = $('<section>').appendTo($main);
             $dlStockStats = $('<dl>').appendTo($subSection1);
