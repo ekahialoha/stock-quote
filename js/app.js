@@ -33,14 +33,13 @@ const runStockQuote = () => {
 
             console.log(data);
 
-            // Main Section with merket graph
+            // Main Section with market graph
             const $mainSection = $('<section>').addClass('main-tab').appendTo($main);
             $mainSection.append(`<h1>${stocks[$symbol].profile.symbol}</h1>`);
             $mainSection.append(`<h3>${data.company.companyName}</h3>`);
 
-            // Graphs
+            // Graph Container
             const $graphContain = $('<div>').addClass('graph-container').appendTo($mainSection);
-            $prevGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_back').appendTo($graphContain);
 
             // Chart Plots Arrays
             let chartLabels = [];
@@ -65,9 +64,11 @@ const runStockQuote = () => {
 
             // Chart Color
             const chartColor = stocks[$symbol].getPositive() === true ? '84, 138, 2' : '186, 56, 60';
+
+            // Build Graphs: Day, Week, Month
             const dailyGraph = () => {
 
-                new Chart($('#daily-graph'), {
+                new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -87,7 +88,7 @@ const runStockQuote = () => {
             };
             const weekGraph = () => {
 
-                new Chart($('#week-graph'), {
+                new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -105,10 +106,9 @@ const runStockQuote = () => {
                     }
                 });
             };
-
             const monthGraph = () => {
 
-                new Chart($('#month-graph'), {
+                new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -127,36 +127,38 @@ const runStockQuote = () => {
                 });
             };
 
+            // Register functions for carousel
             const graphs = [dailyGraph, weekGraph, monthGraph];
 
-            $graphContain.append('<div class="graphs"><div class="daily-graph-container"><canvas id="daily-graph"></canvas></div><div class="week-graph-container"><canvas id="week-graph"></canvas></div><div class="month-graph-container"><canvas id="month-graph"></canvas></div></div>');dailyGraph();
+            // Previous graph button
+            $prevGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_back').appendTo($graphContain);
+
+            // Graph canvas
+            $graphContain.append('<div class="graphs"><div class="canvas-container"><canvas id="graph"></canvas></div></div>');
+            dailyGraph();
+
+            // Next graph button
             $nextGraph = $('<div>').addClass('graph-btn material-icons').text('arrow_forward').appendTo($graphContain);
-            $('.week-graph-container').hide();
-$('.month-graph-container').hide();
 
             // Graph carousel click handlers
             let currentGraph = 0;
-            const lastGraph = $graphContain.children().length - 1;
+            const lastGraph = graphs.length - 1;
             $prevGraph.on('click', () => {
                 console.log('prev');
 
-                const $graphContain = $('.graphs');
-                $graphContain.children().eq(currentGraph).hide();
-
                 // Decrease current graph
                 currentGraph = (currentGraph > 0) ? currentGraph - 1 : lastGraph;
-                $graphContain.children().eq(currentGraph).show();
+
+                // Render graph
                 graphs[currentGraph]();
             });
             $nextGraph.on('click', () => {
                 console.log('next');
-                const $graphContain = $('.graphs');
-                $graphContain.children().eq(currentGraph).hide();
 
                 // Increase current graph
                 currentGraph = (currentGraph < lastGraph) ? currentGraph + 1 : 0;
 
-                $graphContain.children().eq(currentGraph).show();
+                // Render graph
                 graphs[currentGraph]();
             });
 
