@@ -1,11 +1,14 @@
 #container {
     border: 1px solid #000;
+    font-family: 'Source Sans Pro', sans-serif;
     margin: 0 auto;
     width: 100%;
 }
 header {
-    font-size: 3em;
-    padding: 1em;
+    background: #222225;
+    color: #FFF;
+    font-size: 2.5em;
+    padding: .7em;
     text-align: center;
 }
 .search-bar {
@@ -39,8 +42,8 @@ main {
     padding-right: 2em;
 }
 .logo > img {
-    height: 100px;
-    width: 100px;
+    height: 85px;
+    width: 85px;
 }
 .main-tab {
     border: 1px solid green;
@@ -88,16 +91,22 @@ aside > section > div {
 dl {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
     margin: 0;
     padding: 1.5em;
 }
 dt {
-    flex: 0 0 40%;
+    flex: 0 0 35%;
     margin: 0;
 }
 dd {
-    flex: 0 0 40%;
+    flex: 0 0 50%;
     font-weight: bold;
     margin: 0;
+}
+.positive {
+    color: #548A02;
+}
+.negative {
+    color: #BA383C;
 }
