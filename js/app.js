@@ -4,6 +4,7 @@ class Stock {
         this.logo = stockData.logo;
         this.profile = stockData.company;
         this.chart = { today: stockData.chart };
+        this.determinePositive ()
     };
 
     determinePositive () {
@@ -69,9 +70,11 @@ const runStockQuote = () => {
             const chartColor = stocks[$symbol].getPositive() === true ? '84, 138, 2' : '186, 56, 60';
 
             // Build Graphs: Day, Week, Month
+            let chartJs = null;
+
             const dailyGraph = () => {
 
-                new Chart($('#graph'), {
+                chartJs = new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -79,7 +82,7 @@ const runStockQuote = () => {
                             label: 'Daily',
                             data: chartPlots,
                             backgroundColor: [
-                                `rgba(${chartColor}, 0.5)`
+                                `rgba(${chartColor}, 0.8)`
                             ],
                             borderColor: [
                                 `rgb(${chartColor})`
@@ -91,7 +94,7 @@ const runStockQuote = () => {
             };
             const weekGraph = () => {
 
-                new Chart($('#graph'), {
+                chartJs = new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -111,7 +114,7 @@ const runStockQuote = () => {
             };
             const monthGraph = () => {
 
-                new Chart($('#graph'), {
+                chartJs = new Chart($('#graph'), {
                     type: 'line',
                     data: {
                         labels: chartLabels,
@@ -138,6 +141,8 @@ const runStockQuote = () => {
 
             // Graph canvas
             $graphContain.append('<div class="graphs"><div class="canvas-container"><canvas id="graph"></canvas></div></div>');
+
+            // Render first graph
             dailyGraph();
 
             // Next graph button
@@ -152,6 +157,9 @@ const runStockQuote = () => {
                 // Decrease current graph
                 currentGraph = (currentGraph > 0) ? currentGraph - 1 : lastGraph;
 
+                // Destory current graph
+                chartJs.destroy();
+
                 // Render graph
                 graphs[currentGraph]();
             });
@@ -160,6 +168,9 @@ const runStockQuote = () => {
 
                 // Increase current graph
                 currentGraph = (currentGraph < lastGraph) ? currentGraph + 1 : 0;
+
+                // Destory current graph
+                chartJs.destroy();
 
                 // Render graph
                 graphs[currentGraph]();
@@ -177,7 +188,6 @@ const runStockQuote = () => {
             $dlStockStats.append(`<dt>Change</dt><dd>${data.quote.change}</dd>`);
             data.changePercent = (data.quote.changePercent * 100).toFixed(2);
             $dlStockStats.append(`<dt>Change %</dt><dd>${data.changePercent}</dd>`);
-            $dlStockStats.append(`<dt>Sector</dt><dd>${data.quote.sector}</dd>`);
 
             // Stock Profile Section
             $subSection2 = $('<section>').appendTo($asideColumn);
