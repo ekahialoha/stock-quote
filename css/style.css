@@ -1,12 +1,12 @@
 #container {
-    border: 1px solid #000;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Source Sans Pro', monospace;
     margin: 0 auto;
     width: 100%;
 }
 header {
     background: #222225;
     color: #FFF;
+    font-family: 'Alegreya Sans SC', sans-serif;
     font-size: 2.5em;
     padding: .7em;
     text-align: center;
@@ -46,20 +46,22 @@ main {
     width: 85px;
 }
 .main-tab {
-    border: 1px solid green;
+    border: 1px solid #000000;
+    box-shadow: 7px 7px 5px #bababa;
     border-radius: 10px;
     flex-basis: 65%;
+    height: auto;
     padding: 1.5em;
 }
 .graph-container {
     display: flex;
     justify-content: space-around;
-    width: 95%;
+    width: 98%;
 }
 .graphs {
     box-sizing: border-box;
     padding: 10px;
-    width: 90%;
+    width: 100%;
 }
 .graph-btn {
     align-self: center;
@@ -74,14 +76,21 @@ main {
     color: #fff;
     cursor: pointer;
 }
-main h1, main h3 {
-    padding-left: 2em;
+main h1 {
+    font-size: 3em;
+    margin: 0;
+    padding-left: 1em;
+}
+main h3 {
+    margin: 0;
+    padding-left: 2.5em;
 }
 aside {
     flex-basis: 25%;
 }
 aside > section {
-    border: 1px solid green;
+    border: 1px solid #000000;
+    box-shadow: 7px 7px 5px #bababa;
     border-radius: 10px;
     margin-bottom: 1em;
 }
