@@ -1,7 +1,7 @@
 #container {
     border: 1px solid #000;
     margin: 0 auto;
-    width: 80%;
+    width: 100%;
 }
 header {
     font-size: 3em;
@@ -31,21 +31,33 @@ header {
 main {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 1.5em 0;
+}
+.logo {
+    float: right;
+    padding-right: 2em;
+}
+.logo > img {
+    height: 100px;
+    width: 100px;
 }
 .main-tab {
-    flex-grow: 2;
+    border: 1px solid green;
+    border-radius: 10px;
+    flex-basis: 65%;
+    padding: 1.5em;
 }
 .graph-container {
     display: flex;
     justify-content: space-around;
-    width: 70%;
+    width: 95%;
 }
 .graphs {
     box-sizing: border-box;
     padding: 10px;
-    width: 80%;
+    width: 90%;
 }
-
 .graph-btn {
     align-self: center;
     background: #fff;
@@ -59,21 +71,33 @@ main {
     color: #fff;
     cursor: pointer;
 }
-main h1 {
-    text-align: center;
+main h1, main h3 {
+    padding-left: 2em;
+}
+aside {
+    flex-basis: 25%;
+}
+aside > section {
+    border: 1px solid green;
+    border-radius: 10px;
+    margin-bottom: 1em;
+}
+aside > section > div {
+    padding: 0 1.5em 1.5em 1.5em;
 }
 dl {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 0;
+    padding: 1.5em;
 }
 dt {
-    box-sizing: border-box;
-    flex: 0 0 50%;
+    flex: 0 0 40%;
     margin: 0;
 }
 dd {
-    box-sizing: border-box;
-    flex: 0 0 50%;
+    flex: 0 0 40%;
     font-weight: bold;
     margin: 0;
 }

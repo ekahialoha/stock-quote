@@ -29,12 +29,15 @@ const runStockQuote = () => {
         (data) => {
             // Store main container
             stocks[$symbol] = new Stock(data);
+
+            // Ensure working with an empty canvas
             const $main = $('main').empty();
 
-            console.log(data);
+            // console.log(data);
 
             // Main Section with market graph
             const $mainSection = $('<section>').addClass('main-tab').appendTo($main);
+            $mainSection.append(`<div class="logo"><img src="${data.logo.url}" alt="${data.company.companyName}" /></div>`)
             $mainSection.append(`<h1>${stocks[$symbol].profile.symbol}</h1>`);
             $mainSection.append(`<h3>${data.company.companyName}</h3>`);
 
@@ -163,7 +166,8 @@ const runStockQuote = () => {
             });
 
             // Stock Stats Section
-            $subSection1 = $('<section>').appendTo($main);
+            $asideColumn = $('<aside>').appendTo($main);
+            $subSection1 = $('<section>').appendTo($asideColumn);
             $dlStockStats = $('<dl>').appendTo($subSection1);
             $dlStockStats.append(`<dt>Last Updated</dt><dd>${data.quote.latestTime}</dd>`);
             $dlStockStats.append(`<dt>Price</dt><dd>\$${data.quote.latestPrice}</dd>`);
@@ -176,12 +180,12 @@ const runStockQuote = () => {
             $dlStockStats.append(`<dt>Sector</dt><dd>${data.quote.sector}</dd>`);
 
             // Stock Profile Section
-            $subSection2 = $('<section>').appendTo($main);
+            $subSection2 = $('<section>').appendTo($asideColumn);
             $dlStockProfile = $('<dl>').appendTo($subSection2);
             $dlStockProfile.append(`<dt>Sector</dt><dd>${data.company.sector}</dd>`);
             $dlStockProfile.append(`<dt>Industry</dt><dd>${data.company.industry}</dd>`);
             $dlStockProfile.append(`<dt>Website</dt><dd>${data.company.website}</dd>`);
-            $dlStockProfile.append(`<dt>Description</dt><dd>${data.company.description}</dd>`);
+            $subSection2.append(`<div>${data.company.description}</div>`);
 
         },
         (err) => {
