@@ -10,13 +10,59 @@ class Stock {
         this.quote = stockData.quote;
         this.logo = stockData.logo;
         this.profile = stockData.company;
-        this.chart = { day: stockData.chart };
+        this.rawChart = {};
+        this.chartLabels = {};
+        this.chartPlots = {};
+        this.chartColor = {};
+        console.log(stockData.chart);
+        this.setGraphData(stockData.chart, 'day');
         this.determinePositive ();
     };
 
     // Accepts data from API and stores for our uses
-    setGraphData (graphData, graphLabel = 'day') {
-        this.chart[graphLabel] = graphData;
+    setGraphData (graphData, graphLabel) {
+        let chartColor = null;
+        this.chartLabels[graphLabel] = [];
+        this.chartPlots[graphLabel] = [];
+
+        // Set raw data
+        this.rawChart[graphLabel] = graphData;
+
+        graphData.forEach((plot) => {
+            if (graphLabel === 'day') {
+                const segmentClose = (plot.marketClose === null) ? plot.close : plot.marketClose;
+                if (segmentClose !== null) {
+                    this.chartLabels[graphLabel].push(plot.label);
+                    this.chartPlots[graphLabel].push(segmentClose);
+                }
+            } else {
+                // Chart individual plots
+                this.chartLabels[graphLabel].push(plot.date);
+                this.chartPlots[graphLabel].push(plot.close);
+            }
+        });
+
+        // Push Opening and closing plots
+        if (graphLabel === 'day') {
+            // Opening
+            this.chartLabels[graphLabel].unshift('Open');
+            this.chartPlots[graphLabel].unshift(this.quote.open);
+
+            // Closing
+            if (this.quote.latestSource === 'Close' || this.quote.latestSource === 'Previous close') {
+                this.chartLabels[graphLabel].push('Close');
+
+            } else {
+                this.chartLabels[graphLabel].push('Most Recent');
+            }
+            this.chartPlots[graphLabel].push(this.quote.latestPrice);
+
+            this.chartColor[graphLabel] = this.getIsPositive() === true ? '84, 138, 2' : '186, 56, 60';
+        } else {
+            const lastPlot = this.chartPlots[graphLabel].length-1;
+            const positive = Math.sign(this.chartPlots[graphLabel][0] - this.chartPlots[graphLabel][lastPlot]) > -1 ? false : true;
+            this.chartColor[graphLabel] = positive === true ? '84, 138, 2' : '186, 56, 60';
+        }
     };
 
     getLogo () {
@@ -39,6 +85,10 @@ class Stock {
         return this.quote.latestPrice;
     };
 
+    getPreviousClose () {
+        return this.quote.previousClose;
+    };
+
     getIsPositive () {
         return Math.sign(this.quote.change) > -1 ? true : false;
     };
@@ -56,7 +106,7 @@ class Stock {
     };
 
     get52WkLow () {
-        return this.week52Low;
+        return this.quote.week52Low;
     };
 
     getSector () {
@@ -76,7 +126,8 @@ class Stock {
     }
 
     getChartData (whichChart) {
-        return this.chart[whichChart];
+        // return this.chart[whichChart];
+        return [this.chartLabels[whichChart], this.chartPlots[whichChart], this.chartColor[whichChart]];
     };
 
     determinePositive () {
@@ -84,6 +135,7 @@ class Stock {
     };
 
 }
+
 
 const stocks = {};
 
@@ -134,64 +186,25 @@ const runStockQuote = () => {
                 let chartPlots = [];
 
                 // Create variables
-                let chartData = null;
                 let chartName = null;
                 let chartColor = null;
 
                 switch (type) {
                     case 'week':
                         chartName = 'Week';
-                        chartData = currStock.getChartData('week');
+                        [chartLabels, chartPlots, chartColor] = currStock.getChartData('week');
                     break;
 
                     case 'month':
                         chartName = 'Month';
-                        chartData = currStock.getChartData('month');
+                        [chartLabels, chartPlots, chartColor] = currStock.getChartData('month');
                     break;
 
                     case 'day':
                     default:
                         chartName = 'Day';
-                        chartData = currStock.getChartData('day');
+                        [chartLabels, chartPlots, chartColor] = currStock.getChartData('day');
                     break;
-                }
-
-                if (type === 'day') {
-                    // Push Opening Plot
-                    chartLabels.push('Open');
-                    chartPlots.push(stocks[$symbol].quote.open);
-                }
-
-                // Chart individual plots
-                chartData.forEach((plot) => {
-                    if (type !== 'day') {
-                        // Chart individual plots
-                        chartLabels.push(plot.date);
-                        chartPlots.push(plot.close);
-
-                        // Chart Color
-                        const positive = Math.sign(chartPlots[0] - chartPlots[chartPlots.length-1]) > -1 ? false : true;
-                        chartColor = positive === true ? '84, 138, 2' : '186, 56, 60';
-                    } else {
-                        // Skip over data without any useful information
-                        const segmentClose = (plot.marketClose === null) ? plot.close : plot.marketClose;
-                        if (segmentClose !== null) {
-                            chartLabels.push(plot.label);
-                            chartPlots.push(segmentClose);
-                        }
-                        chartColor = stocks[$symbol].getIsPositive() === true ? '84, 138, 2' : '186, 56, 60';
-                    }
-                });
-
-                if (type === 'day') {
-                    // Push Closing/Current Plot
-                    if (stocks[$symbol].quote.latestSource === 'Close' || stocks[$symbol].quote.latestSource === 'Previous close') {
-                        chartLabels.push('Close');
-
-                    } else {
-                        chartLabels.push('Most Recent');
-                    }
-                    chartPlots.push(stocks[$symbol].quote.latestPrice);
                 }
 
                 // Chart Color
@@ -204,7 +217,7 @@ const runStockQuote = () => {
                             data: chartPlots,
                             backgroundColor: `rgba(${chartColor}, 0.6)`,
                             borderColor: `rgb(${chartColor})`,
-                            borderWidth: 4,
+                            borderWidth: 3,
                         }]
                     },
                 });
@@ -255,9 +268,8 @@ const runStockQuote = () => {
             $dlStockStats = $('<dl>').appendTo($subSection1);
             $dlStockStats.append(`<dt>Last Updated</dt><dd>${currStock.getLastUpdate()}</dd>`);
             $dlStockStats.append(`<dt>Price</dt><dd>\$${currStock.getLatestPrice()}</dd>`);
-            $dlStockStats.append(`<dt>Previous Close</dt><dd>${data.quote.previousClose}</dd>`);
+            $dlStockStats.append(`<dt>Previous Close</dt><dd>${currStock.getPreviousClose()}</dd>`);
             const chngStyle = currStock.getIsPositive() === true ? 'positive' : 'negative';
-            data.changePercent = (data.quote.changePercent * 100).toFixed(2);
             $dlStockStats.append(`<dt>Change</dt><dd><span class="${chngStyle}">${currStock.getChange()}</span> (<span class="${chngStyle}">${currStock.getPercentChange()}%</span>)</dd>`);
             $dlStockStats.append(`<dt>52 Wk High</dt><dd>${currStock.get52WkHigh()}</dd>`);
             $dlStockStats.append(`<dt>52 Week Low</dt><dd>${currStock.get52WkLow()}</dd>`);
