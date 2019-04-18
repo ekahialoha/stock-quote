@@ -11,6 +11,10 @@ header {
     padding: .7em;
     text-align: center;
 }
+header a {
+    color: #FFF;
+    text-decoration: none;
+}
 .search-bar {
     border-bottom: 1px solid #000;
     border-top: 1px solid #000;
@@ -97,6 +101,10 @@ aside > section {
 aside > section > div {
     padding: 0 1.5em 1.5em 1.5em;
 }
+section > h2 {
+    margin: 0;
+    padding: 1.5em 1.5em 0 1em;
+}
 dl {
     display: flex;
     flex-wrap: wrap;
@@ -105,13 +113,16 @@ dl {
     padding: 1.5em;
 }
 dt {
-    flex: 0 0 35%;
+    flex: 0 0 40%;
     margin: 0;
 }
 dd {
-    flex: 0 0 50%;
+    flex: 0 0 45%;
     font-weight: bold;
     margin: 0;
+}
+dd > span {
+    font-size: 1em;
 }
 .positive {
     color: #548A02;
@@ -122,4 +133,15 @@ dd {
 footer {
     font-size: .7em;
     text-align: center;
+}
+article h2 {
+  margin: 0;
+  padding: 0;
+}
+article h3 {
+  border-bottom: 1px solid #cccccc;
+  font-weight: normal;
+  font-size: .8em;
+  margin: 5px 0;
+  padding: 0;
 }

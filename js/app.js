@@ -139,8 +139,29 @@ class Stock {
 
 const stocks = {};
 
+const styleBasedOnSign = (number, showIcon = true, isPositive = null) => {
+    // If isPositive not passed to function, determine based on number
+    if (isPositive === null) {
+        isPositive = Math.sign(number) > -1 ? true : false;
+    }
+
+    // Determine type of indicator icon to display
+    const indicator = isPositive === true ? 'arrow_upward' : 'arrow_downward';
+
+    // Determine color
+    const style = isPositive === true ? 'positive' : 'negative'
+
+    if (showIcon === true) {
+        return `<i class="material-icons ${style}">${indicator}</i><span class="${style}">${number}</span>`;
+    } else {
+        return `<span class="${style}">${number}</span>`;
+    }
+};
+
 const runStockQuote = () => {
+    // Prevent default form event
     event.preventDefault();
+
     // Store current symbol
     const $symbol = $('#symbol').val();
 
@@ -263,20 +284,21 @@ const runStockQuote = () => {
             });
 
             // Stock Stats Section
-            $asideColumn = $('<aside>').appendTo($main);
-            $subSection1 = $('<section>').appendTo($asideColumn);
-            $dlStockStats = $('<dl>').appendTo($subSection1);
+            const $asideColumn = $('<aside>').appendTo($main);
+            const $subSection1 = $('<section>').appendTo($asideColumn);
+            const $dlStockStats = $('<dl>').appendTo($subSection1);
             $dlStockStats.append(`<dt>Last Updated</dt><dd>${currStock.getLastUpdate()}</dd>`);
             $dlStockStats.append(`<dt>Price</dt><dd>\$${currStock.getLatestPrice()}</dd>`);
             $dlStockStats.append(`<dt>Previous Close</dt><dd>${currStock.getPreviousClose()}</dd>`);
             const chngStyle = currStock.getIsPositive() === true ? 'positive' : 'negative';
-            $dlStockStats.append(`<dt>Change</dt><dd><span class="${chngStyle}">${currStock.getChange()}</span> (<span class="${chngStyle}">${currStock.getPercentChange()}%</span>)</dd>`);
+            styleBasedOnSign
+            $dlStockStats.append(`<dt>Change</dt><dd>${styleBasedOnSign(currStock.getChange())} (${styleBasedOnSign(currStock.getPercentChange(), false)}%)</dd>`);
             $dlStockStats.append(`<dt>52 Wk High</dt><dd>${currStock.get52WkHigh()}</dd>`);
             $dlStockStats.append(`<dt>52 Week Low</dt><dd>${currStock.get52WkLow()}</dd>`);
 
             // Stock Profile Section
-            $subSection2 = $('<section>').appendTo($asideColumn);
-            $dlStockProfile = $('<dl>').appendTo($subSection2);
+            const $subSection2 = $('<section>').appendTo($asideColumn);
+            const $dlStockProfile = $('<dl>').appendTo($subSection2);
             $dlStockProfile.append(`<dt>Sector</dt><dd>${currStock.getSector()}</dd>`);
             $dlStockProfile.append(`<dt>Industry</dt><dd>${currStock.getIndustry()}</dd>`);
             $dlStockProfile.append(`<dt>Website</dt><dd>${currStock.getWebsite()}</dd>`);
@@ -288,11 +310,48 @@ const runStockQuote = () => {
             // trigger error
         }
     );
-    return false;
+};
+
+const runNews = () => {
+    const newsPromise = $.ajax(
+        {
+            url: 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=b5c6100eff34452e8660fc93faf0894f&pageSize=15',
+        }
+    ).then((newsData) => {
+        // Ensure working with an main
+        const $main = $('main');
+        const $mainSection = $('<section>').addClass('main-tab').appendTo($main);
+        newsData.articles.forEach((article) => {
+            const $article = $('<article>').appendTo($mainSection);
+            $article.append(`<h2>${article.title}</h2>`);
+            $article.append(`<h3>${article.publishedAt} by ${article.source.name}</h3>`)
+            $article.append(`<p>${article.description} [<a href="${article.url}" target="_blank">Continue Reading</a>]</p>`)
+        });
+
+        const $asideColumn = $('<aside>').appendTo($main);
+        const $subSection = $('<section>').appendTo($asideColumn);
+        $subSection.append('<h2>Sector Performance</h2>');
+        const $sectionDl = $('<dl>').appendTo($subSection);
+        const chartPromise = $.ajax(
+            { url: 'https://api.iextrading.com/1.0/stock/market/sector-performance' }
+        ).then((sectorData) => {
+            console.log(sectorData);
+            sectorData.forEach((sector) => {
+                const positive = Math.sign(sector.performance) > -1 ? true : false;
+                const sectorStyle = positive === true ? 'positive' : 'negative';
+                $sectionDl.append(`<dt>${sector.name}</dt><dd>${styleBasedOnSign((sector.performance * 100).toFixed(2))}</dd>`);
+            });
+        });
+    },
+    (err) => {
+        console.log(err);
+        // trigger error
+    })
 };
 
 $(() => {
 
     $('form').on('submit', runStockQuote);
+    runNews();
     // console.log($($.parseXML('<test>Testing</test>')).text());
 });
