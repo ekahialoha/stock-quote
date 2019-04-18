@@ -119,3 +119,7 @@ dd {
 .negative {
     color: #BA383C;
 }
+footer {
+    font-size: .7em;
+    text-align: center;
+}
