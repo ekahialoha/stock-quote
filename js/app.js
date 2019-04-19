@@ -293,7 +293,7 @@ const runStockQuote = () => {
             const chngStyle = currStock.getIsPositive() === true ? 'positive' : 'negative';
             styleBasedOnSign
             $dlStockStats.append(`<dt>Change</dt><dd>${styleBasedOnSign(currStock.getChange())} (${styleBasedOnSign(currStock.getPercentChange(), false)}%)</dd>`);
-            $dlStockStats.append(`<dt>52 Wk High</dt><dd>${currStock.get52WkHigh()}</dd>`);
+            $dlStockStats.append(`<dt>52 Week High</dt><dd>${currStock.get52WkHigh()}</dd>`);
             $dlStockStats.append(`<dt>52 Week Low</dt><dd>${currStock.get52WkLow()}</dd>`);
 
             // Stock Profile Section
