@@ -14,7 +14,6 @@ class Stock {
         this.chartLabels = {};
         this.chartPlots = {};
         this.chartColor = {};
-        console.log(stockData.chart);
         this.setGraphData(stockData.chart, 'day');
         this.determinePositive ();
     };
@@ -290,8 +289,6 @@ const runStockQuote = () => {
             $dlStockStats.append(`<dt>Last Updated</dt><dd>${currStock.getLastUpdate()}</dd>`);
             $dlStockStats.append(`<dt>Price</dt><dd>\$${currStock.getLatestPrice()}</dd>`);
             $dlStockStats.append(`<dt>Previous Close</dt><dd>${currStock.getPreviousClose()}</dd>`);
-            const chngStyle = currStock.getIsPositive() === true ? 'positive' : 'negative';
-            styleBasedOnSign
             $dlStockStats.append(`<dt>Change</dt><dd>${styleBasedOnSign(currStock.getChange())} (${styleBasedOnSign(currStock.getPercentChange(), false)}%)</dd>`);
             $dlStockStats.append(`<dt>52 Week High</dt><dd>${currStock.get52WkHigh()}</dd>`);
             $dlStockStats.append(`<dt>52 Week Low</dt><dd>${currStock.get52WkLow()}</dd>`);
@@ -335,7 +332,6 @@ const runNews = () => {
         const chartPromise = $.ajax(
             { url: 'https://api.iextrading.com/1.0/stock/market/sector-performance' }
         ).then((sectorData) => {
-            console.log(sectorData);
             sectorData.forEach((sector) => {
                 const positive = Math.sign(sector.performance) > -1 ? true : false;
                 const sectorStyle = positive === true ? 'positive' : 'negative';
